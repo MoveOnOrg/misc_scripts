@@ -1,0 +1,1 @@
+-e git+https://github.com/MoveOnOrg/python-actionkit.git@d85afffe99c72fa62e45512b0e4363abcccfd496#egg=python_actionkit
