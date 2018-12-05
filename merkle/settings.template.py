@@ -1,0 +1,8 @@
+AK_BASEURL = ''
+AK_USER = ''
+AK_PASSWORD = ''
+AK_IMPORT_PAGE = ''
+PGP_PASS = ''
+SFTP_HOST = ''
+SFTP_USER = ''
+SFTP_PASS = ''
