@@ -1,3 +1,4 @@
 -e git+https://github.com/MoveOnOrg/python-actionkit.git@public-master#egg=python-actionkit
 paramiko==2.4.2
 pexpect==4.6.0
+slackweb==1.0.5

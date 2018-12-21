@@ -1,6 +1,7 @@
 venv
 *.pyc
 *.csv
+*.pgp
 src
 *.key
 settings.py
