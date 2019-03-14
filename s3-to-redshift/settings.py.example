@@ -1,0 +1,11 @@
+import os
+
+AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')
+AWS_SECRET_KEY = os.environ.get('AWS_SECRET_KEY', '')
+REDSHIFT_USER = os.environ.get('REDSHIFT_USER', '')
+REDSHIFT_HOST = os.environ.get('REDSHIFT_HOST', '')
+REDSHIFT_PORT = os.environ.get('REDSHIFT_PORT', '5439')
+REDSHIFT_PASS = os.environ.get('REDSHIFT_PASS', '')
+REDSHIFT_DB = os.environ.get('REDSHIFT_DB', '')
+S3_BUCKET = os.environ.get('S3_BUCKET', '')
+S3_PREFIX = os.environ.get('S3_PREFIX', '')
