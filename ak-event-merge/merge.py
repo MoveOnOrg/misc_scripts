@@ -39,6 +39,7 @@ def main(args):
     to_signups = {}
     next = False
     offset = 0
+    print('Merging event {} into event {}'.format(args.FROM_EVENT, args.TO_EVENT))
     while next is not None:
         print('Loading TO event signups ... %s' % offset)
         reponse = ak.list_signups(query_params={
@@ -99,6 +100,7 @@ def main(args):
         if not to_signups.get(user_id, False):
             ak.create_signup(user_id, args.TO_EVENT, args.SIGNUP_PAGE, role='attendee', fields={'source': 'ak-event-merge'})
     # Cancel FROM event.
+    print('Canceling event {}'.format(args.FROM_EVENT))
     ak.update_event_action(args.FROM_EVENT, {
         'event_status': 'cancelled'
     })
