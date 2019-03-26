@@ -14,7 +14,7 @@ else:
 ARG_DEFINITIONS = {
     'FROM_EVENT': 'ID of event to remove attendees and hosts from',
     'TO_EVENT': 'ID of event to add attendees and hosts to',
-    'SIGNUP_PAGE': 'ID of the signup page for TO_EVENT',
+    'SIGNUP_PAGE': 'Integer ID of the signup page for TO_EVENT. Be absolutely certain this is the right page ID - RSVP import will fail silently if it is not.',
     'AK_BASEURL': 'Base URL of ActionKit instance',
     'AK_USER': 'ActionKit username',
     'AK_PASS': 'ActionKit password'
