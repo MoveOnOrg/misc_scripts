@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 import sys
 
@@ -16,13 +17,16 @@ ARG_DEFINITIONS = {
     'DB_PORT': 'Database port number',
     'DB_USER': 'Database user',
     'DB_PASS': 'Database password',
-    'DB_NAME': 'Database name',
-    'LAST_RUN_SCRIPT': 'Script name.'
+    'DB_NAME': 'Database name'
 }
 
 REQUIRED_ARGS = [
-    'DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASS', 'DB_NAME', 'LAST_RUN_SCRIPT'
+    'DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASS', 'DB_NAME'
 ]
+
+def table_date(table):
+    ts = int(''.join([char for char in list(table) if char.isdigit()]))
+    return datetime.utcfromtimestamp(ts)
 
 def main(args):
     all_required_args_set = True
@@ -43,14 +47,32 @@ def main(args):
         database_cursor = database.cursor(
             cursor_factory=psycopg2.extras.RealDictCursor
         )
-        last_run_query = """
-        SELECT last_run
-        FROM tech.script_last_run
-        WHERE script = '%s'
-        """ % args.LAST_RUN_SCRIPT
-        database_cursor.execute(last_run_query)
-        last_run_result = list(database_cursor.fetchall())
-        return str(last_run_result[0].get('last_run'))
+        tables_query = """
+        SET search_path TO 'signature_propensity';
+        SELECT DISTINCT(tablename)
+        FROM pg_table_def
+        WHERE (
+            tablename LIKE 'global_sig_prop_targets%'
+            OR tablename LIKE 'prop_targets%'
+        )
+        AND tablename NOT LIKE '%_pkey'
+        """
+        database_cursor.execute(tables_query)
+        tables_result = list(database_cursor.fetchall())
+        tables = [table.get('tablename') for table in tables_result]
+        table_dates = {}
+        for table in tables:
+            table_dates[table] = table_date(table)
+        today = datetime.today()
+        month_ago = today - timedelta(days=30)
+        old_tables = [table for table in table_dates.keys() if table_dates[table] < month_ago][:100]
+        for table in old_tables:
+            database_cursor.execute("""
+            DROP TABLE signature_propensity.%s
+            """ % table)
+        database.commit()
+        database_cursor.close()
+        return old_tables
 
 if __name__ == '__main__':
     """
@@ -60,8 +82,9 @@ if __name__ == '__main__':
     import pprint
 
     parser = argparse.ArgumentParser(
-        description=('Get date of last run.')
+        description='Drop old signature propensity tables.'
     )
+    pp = pprint.PrettyPrinter(indent=2)
 
     for argname, helptext in ARG_DEFINITIONS.items():
         parser.add_argument(
@@ -70,4 +93,4 @@ if __name__ == '__main__':
         )
 
     args = parser.parse_args()
-    pprint.PrettyPrinter(indent=2).pprint(main(args))
+    pp.pprint(main(args))
