@@ -1,0 +1,13 @@
+import os
+
+AK_BASEURL = os.environ.get('AK_BASEURL', '')
+AK_USER = os.environ.get('AK_USER', '')
+AK_PASSWORD = os.environ.get('AK_PASSWORD', '')
+COUNT = os.environ.get('COUNT', 100)
+CSV = os.environ.get('CSV', '')
+DB_USER = os.environ.get('DB_USER', '')
+DB_HOST = os.environ.get('DB_HOST', '')
+DB_PORT = os.environ.get('DB_PORT', '')
+DB_PASS = os.environ.get('DB_PASS', '')
+DB_NAME = os.environ.get('DB_NAME', '')
+DB_TABLE = os.environ.get('DB_TABLE', '')
