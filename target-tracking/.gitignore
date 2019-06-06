@@ -1,0 +1,5 @@
+*.pyc
+settings.py
+venv
+zappa_settings.json
+*.sql
