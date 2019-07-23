@@ -1,0 +1,2 @@
+-e git+https://github.com/MoveOnOrg/python-actionkit.git@public-master#egg=python-actionkit
+PyMySQL==0.9.3
