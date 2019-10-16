@@ -1,0 +1,26 @@
+
+
+REDASH_BASE_URL = 'https://redash.example.com'
+REDASH_USER_API_KEY = ''
+
+
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+# you'll need these creds here to UNLOAD the data from Redshift to S3
+# and you'll need them in ~/.aws/credentials to write the table create
+# SQL to s3 via boto3.
+# See https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html
+
+S3_BUCKET = 'my-bucket'
+
+# you can list a whole schema of tables in Redshift with
+# select schemaname||'.'||tablename from pg_tables where schemaname = {schema}
+
+tables_to_archive = [
+    'schemaname.tablename',
+    'schemaname.othertablename'
+]
+
+refresh_table_create_sql = False
+
+# tor un this script you also need to 
