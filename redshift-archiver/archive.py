@@ -4,9 +4,10 @@
 """
 
 import boto3
-import settings
+from botocore.errorfactory import ClientError
 from datetime import datetime
 
+import settings
 from redash import RedashPoller
 
 def update_create_table_sql(redash):
@@ -66,21 +67,44 @@ def export_table(schema, table, redash):
 
         select random();
     """
-    # confirm that table data have indeed been exported without errors
     print('exported table data to s3://{}/{}.{}/'.format(settings.S3_BUCKET, schema, table))
-    return res
+    return True
+
+def check_for_archive_objects(schema, table, s3client):
+    if settings.archive_sql:
+        sql_key = '{0}/{0}.{1}.sql'.format(schema, table)
+        try:
+            s3client.head_object(Bucket=settings.S3_BUCKET, Key=sql_key)
+        except ClientError:
+            print("Missing SQL file for {}.{}".format(schema, table))
+    data_prefix = '{}.{}'.format(schema, table)
+    results = s3client.list_objects(Bucket=settings.S3_BUCKET, Prefix=data_prefix)
+    try:
+        file_count = len(results['Contents']) # should be 4n+1 for 4 node cluster
+    except KeyError:
+        print("Missing data files for {}.{}".format(schema, table))
 
 if __name__ == '__main__':
     redash = RedashPoller(settings.REDASH_BASE_URL, settings.REDASH_USER_API_KEY)
     s3 = boto3.resource('s3')
+
     if settings.refresh_table_create_sql:
         r = update_create_table_sql(redash)
-    print("Started archiving at {}".format(datetime.now()))
+
+    if not settings.just_check_files:
+        print("Started archiving at {}".format(datetime.now()))
+        for tablename in settings.tables_to_archive:
+            schema, table = tablename.split('.')
+            if settings.archive_sql:
+                sql = get_create_table_sql(schema, table, redash, s3)
+                print(sql)
+            res = export_table(schema, table, redash)
+        print("Finished archiving at {}".format(datetime.now()))
+    
+    print("Checking archive for missing files ...")
     for tablename in settings.tables_to_archive:
         schema, table = tablename.split('.')
-        sql = get_create_table_sql(schema, table, redash, s3)
-        print(sql)
-        res = export_table(schema, table, redash)
-        print(res)
-    print("Finished archiving at {}".format(datetime.now()))
+        s3client = boto3.client('s3')
+        check_for_archive_objects(schema, table, s3client)
+    print("Finished check for missing files.")
 

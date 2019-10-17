@@ -13,6 +13,10 @@ AWS_SECRET_ACCESS_KEY = ''
 
 S3_BUCKET = 'my-bucket'
 
+refresh_table_create_sql = False
+archive_sql = True # exports a CREATE TABLE statement that exactly re-creates the table as it was
+just_check_files = False
+
 # you can list a whole schema of tables in Redshift with
 # select schemaname||'.'||tablename from pg_tables where schemaname = {schema}
 
