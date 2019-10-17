@@ -5,6 +5,8 @@
 
 import boto3
 import settings
+from datetime import datetime
+
 from redash import RedashPoller
 
 def update_create_table_sql(redash):
@@ -66,16 +68,19 @@ def export_table(schema, table, redash):
     """
     # confirm that table data have indeed been exported without errors
     print('exported table data to s3://{}/{}.{}/'.format(settings.S3_BUCKET, schema, table))
+    return res
 
 if __name__ == '__main__':
     redash = RedashPoller(settings.REDASH_BASE_URL, settings.REDASH_USER_API_KEY)
     s3 = boto3.resource('s3')
     if settings.refresh_table_create_sql:
         r = update_create_table_sql(redash)
+    print("Started archiving at {}".format(datetime.now()))
     for tablename in settings.tables_to_archive:
         schema, table = tablename.split('.')
         sql = get_create_table_sql(schema, table, redash, s3)
         print(sql)
         res = export_table(schema, table, redash)
         print(res)
+    print("Finished archiving at {}".format(datetime.now()))
 
