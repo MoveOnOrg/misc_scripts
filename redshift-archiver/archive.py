@@ -60,7 +60,7 @@ def export_table(schema, table, redash):
     """ 
         query 5928:
 
-        unload ('select * from {{schema}}.{{table}}')
+        unload ('select * from "{{schema}}"."{{table}}"')
         to 's3://redshift-archive.moveon.org/{{schema}}.{{table}}/'
         access_key_id '{{aki}}' secret_access_key '{{sak}}'
         manifest gzip csv header allowoverwrite;
