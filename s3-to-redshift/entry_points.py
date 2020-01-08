@@ -6,7 +6,7 @@ def all_required_args_set(args, required, definitions) -> bool:
 
     for arg in required:
         if not getattr(args, arg, False):
-            print('%s (%s) required, missing.' % (definitions.get(arg), arg))
+            print(('%s (%s) required, missing.' % (definitions.get(arg), arg)))
             set = False
 
     return set
@@ -28,7 +28,7 @@ def run_from_cli(func, description, definitions, required) -> None:
 
     parser = argparse.ArgumentParser(description=description)
 
-    for argname, helptext in definitions.items():
+    for argname, helptext in list(definitions.items()):
         parser.add_argument(
             '--%s' % argname, dest=argname, help=helptext,
             default=getattr(settings, argname, False)

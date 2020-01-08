@@ -33,7 +33,7 @@ def main(args):
 
     for arg in REQUIRED_ARGS:
         if not getattr(args, arg, False):
-            print('%s (%s) required, missing.' % (ARG_DEFINITIONS.get(arg), arg))
+            print(('%s (%s) required, missing.' % (ARG_DEFINITIONS.get(arg), arg)))
             all_required_args_set = False
 
     if all_required_args_set:
@@ -65,7 +65,7 @@ def main(args):
             table_dates[table] = table_date(table)
         today = datetime.today()
         month_ago = today - timedelta(days=30)
-        old_tables = [table for table in table_dates.keys() if table_dates[table] < month_ago][:100]
+        old_tables = [table for table in list(table_dates.keys()) if table_dates[table] < month_ago][:100]
         for table in old_tables:
             database_cursor.execute("""
             DROP TABLE signature_propensity.%s
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     )
     pp = pprint.PrettyPrinter(indent=2)
 
-    for argname, helptext in ARG_DEFINITIONS.items():
+    for argname, helptext in list(ARG_DEFINITIONS.items()):
         parser.add_argument(
             '--%s' % argname, dest=argname, help=helptext,
             default=getattr(settings, argname, False)

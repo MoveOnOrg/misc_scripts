@@ -21,7 +21,7 @@ def main(args) -> str:
       reader = csv.reader(input_file)
       headers = next(reader)
 
-    for old, new in parse_qs(args.CORRECTIONS).items():
+    for old, new in list(parse_qs(args.CORRECTIONS).items()):
         if old in headers:
             headers[headers.index(old)] = new[0]
 

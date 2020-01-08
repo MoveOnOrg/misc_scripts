@@ -31,7 +31,7 @@ def main(args) -> list:
         print('QUERY or SQL parameter required, both missing.')
         return []
     params = parse_qs(args.PARAMS)
-    for key, value in params.items():
+    for key, value in list(params.items()):
         args.QUERY = args.QUERY.replace('{{%s}}' % key, value[0])
     connection = pymysql.connect(
         host=args.MYSQL_DB_HOST,

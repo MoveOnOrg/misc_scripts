@@ -40,7 +40,7 @@ def main(args):
     next = False
     offset = 0
     while next is not None:
-        print('Loading TO event signups ... %s' % offset)
+        print(('Loading TO event signups ... %s' % offset))
         reponse = ak.list_signups(query_params={
             'event': args.TO_EVENT,
             '_limit': 100,
@@ -59,7 +59,7 @@ def main(args):
     next = False
     offset = 0
     while next is not None:
-        print('Loading hosts ... %s' % offset)
+        print(('Loading hosts ... %s' % offset))
         host_reponse = ak.list_signups(query_params={
             'event': args.FROM_EVENT,
             'role': 'host',
@@ -71,7 +71,7 @@ def main(args):
         hosts += host_reponse.get('objects')
     # Save hosts TO event.
     for index, host in enumerate(hosts):
-        print('Adding hosts ... %s/%s' % (index + 1, len(hosts)))
+        print(('Adding hosts ... %s/%s' % (index + 1, len(hosts))))
         user_id = re.findall(r'/(\d+)/?$', host.get('user'))[0]
         if not to_signups.get(user_id, False):
             ak.create_signup(user_id, args.TO_EVENT, args.SIGNUP_PAGE, role='host', fields={'source': 'ak-event-merge'})
@@ -82,7 +82,7 @@ def main(args):
     next = False
     offset = 0
     while next is not None:
-        print('Loading FROM attendees ... %s' % offset)
+        print(('Loading FROM attendees ... %s' % offset))
         attendee_response = ak.list_signups(query_params={
             'event': args.FROM_EVENT,
             'role': 'attendee',
@@ -94,7 +94,7 @@ def main(args):
         attendees += attendee_response.get('objects')
     # Save attendees TO event.
     for index, attendee in enumerate(attendees):
-        print('Adding attendees ... %s/%s' % (index + 1, len(attendees)))
+        print(('Adding attendees ... %s/%s' % (index + 1, len(attendees))))
         user_id = re.findall(r'/(\d+)/?$', attendee.get('user'))[0]
         if not to_signups.get(user_id, False):
             ak.create_signup(user_id, args.TO_EVENT, args.SIGNUP_PAGE, role='attendee', fields={'source': 'ak-event-merge'})
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     )
     pp = pprint.PrettyPrinter(indent=2)
 
-    for argname, helptext in ARG_DEFINITIONS.items():
+    for argname, helptext in list(ARG_DEFINITIONS.items()):
         parser.add_argument(
             '--%s' % argname, dest=argname, help=helptext,
             default=getattr(settings, argname, False)
